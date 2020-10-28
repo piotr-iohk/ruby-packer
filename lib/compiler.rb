@@ -288,6 +288,10 @@ class Compiler
     @utils.chdir(@work_dir_local) do
       log '=> gem env'
       @utils.run local_toolchain_env, @gem, 'env'
+      # `gem install ffi -v '1.13.1'
+      @utils.run local_toolchain_env, @gem, 'install', 'native-package-installer'
+      @utils.run local_toolchain_env, @gem, 'install', 'pkg-config'
+      @utils.run local_toolchain_env, @gem, 'install', 'ffi'
       @utils.run local_toolchain_env, @bundle, 'env'
       @utils.run(local_toolchain_env, @bundle, 'install', '--without', 'development', 'test')
       # detect Rails
