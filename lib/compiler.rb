@@ -614,16 +614,15 @@ class Compiler
       if Gem.win_platform?
         # path/to/configure CC=path/to/msvcc.sh CXX=path/to/msvcc.sh LD=link CPP="cl -nologo -EP" CPPFLAGS="-DFFI_BUILDING_DLL"
         @utils.run(compile_env,
-          'sh',
+          'bash',
           './configure',
           'CC=./msvcc.sh',
           'CXX=./msvcc.sh',
           'LD=link',
           'CPP="cl -nologo -EP"',
-          'CPPFLAGS="-DFFI_BUILDING_DLL"'
-          )
-          @utils.run(compile_env, "make #{@options[:make_args]}")
-          @utils.run(compile_env, 'make install')
+          'CPPFLAGS="-DFFI_BUILDING_DLL"')
+          @utils.run(compile_env, "nmake #{@options[:nmake_args]}")
+          @utils.run(compile_env, 'nmake install')
       else
         @utils.run(compile_env,
           './configure',

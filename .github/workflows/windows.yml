@@ -53,13 +53,15 @@ jobs:
           ruby -v
           where bundle
           bundle -v
+          where bash
+          where msys2
         shell: cmd
       - name: "[Enclose.IO] Rake"
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.vs }}\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           mkdir C:\rubyc_tmp
           bundle exec rake
-        shell: bash
+        shell: cmd
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release
