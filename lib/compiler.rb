@@ -186,11 +186,11 @@ class Compiler
     @utils.mkdir_p(@work_dir_dummy)
 
     copy_ruby_source unless Dir.exist?(@ruby_source_dir)
+    stuff_libffi
     stuff_zlib
     stuff_openssl
     stuff_gdbm
     stuff_yaml
-    stuff_libffi
     stuff_ncurses
     stuff_readline
     prepare_pass1_flags
@@ -603,7 +603,6 @@ class Compiler
   end
 
   def stuff_libffi
-    return if Gem.win_platform? # TODO
 
     stuff 'libffi' do
       Dir['**/configure.ac'].each do |x|
@@ -612,15 +611,29 @@ class Compiler
       Dir['**/*.m4'].each do |x|
         File.utime(Time.at(0), Time.at(0), x)
       end
-
-      @utils.run(compile_env,
-                 './configure',
-                 '--with-pic',
-                 '--disable-shared',
-                 '--enable-static',
-                 "--prefix=#{@local_build}")
-      @utils.run(compile_env, "make #{@options[:make_args]}")
-      @utils.run(compile_env, 'make install')
+      if Gem.win_platform?
+        # path/to/configure CC=path/to/msvcc.sh CXX=path/to/msvcc.sh LD=link CPP="cl -nologo -EP" CPPFLAGS="-DFFI_BUILDING_DLL"
+        @utils.run(compile_env,
+          'sh',
+          './configure',
+          'CC=./msvcc.sh',
+          'CXX=./msvcc.sh',
+          'LD=link',
+          'CPP="cl -nologo -EP"',
+          'CPPFLAGS="-DFFI_BUILDING_DLL"'
+          )
+          @utils.run(compile_env, "make #{@options[:make_args]}")
+          @utils.run(compile_env, 'make install')
+      else
+        @utils.run(compile_env,
+          './configure',
+          '--with-pic',
+          '--disable-shared',
+          '--enable-static',
+          "--prefix=#{@local_build}")
+          @utils.run(compile_env, "make #{@options[:make_args]}")
+          @utils.run(compile_env, 'make install')
+      end
     end
   end
 

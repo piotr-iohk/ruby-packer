@@ -22,7 +22,9 @@ jobs:
         run: |
           choco install --no-progress squashfs
       - name: "[Enclose.IO] Set up Ruby"
-        uses: ruby/setup-ruby@v1
+        uses: MSP-Greg/ruby-setup-ruby@add-path
+        with:
+          ruby-version: 2.7.1
       - name: "[Enclose.IO] Install rubocop"
         run: gem install rubocop
       - name: "[Enclose.IO] Run rubocop"
@@ -56,7 +58,7 @@ jobs:
           call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.vs }}\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           mkdir C:\rubyc_tmp
           bundle exec rake
-        shell: cmd
+        shell: bash
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release
