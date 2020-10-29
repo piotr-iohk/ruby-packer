@@ -616,8 +616,8 @@ class Compiler
         @utils.run(compile_env,
           'sh',
           './configure',
-          'CC=./msvcc.sh',
-          'CXX=./msvcc.sh',
+          'CC=msvcc.sh',
+          'CXX=msvcc.sh',
           'LD=link',
           'CPP="cl -nologo -EP"',
           'CPPFLAGS="-DFFI_BUILDING_DLL"')
