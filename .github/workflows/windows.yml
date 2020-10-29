@@ -51,10 +51,11 @@ jobs:
           mksquashfs -version
           where ruby
           ruby -v
-          where bundle
-          bundle -v
           where bash
           where msys2
+          where sh
+          where bundle
+          bundle -v
         shell: cmd
       - name: "[Enclose.IO] Rake"
         run: |
@@ -62,6 +63,13 @@ jobs:
           mkdir C:\rubyc_tmp
           bundle exec rake
         shell: cmd
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: libffi
+          path: C:/rubyc_tmp/libffi/
+
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release

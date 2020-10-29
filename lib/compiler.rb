@@ -614,7 +614,7 @@ class Compiler
       if Gem.win_platform?
         # path/to/configure CC=path/to/msvcc.sh CXX=path/to/msvcc.sh LD=link CPP="cl -nologo -EP" CPPFLAGS="-DFFI_BUILDING_DLL"
         @utils.run(compile_env,
-          'bash',
+          'sh',
           './configure',
           'CC=./msvcc.sh',
           'CXX=./msvcc.sh',
