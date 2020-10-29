@@ -22,9 +22,10 @@ jobs:
         run: |
           choco install --no-progress squashfs
       - name: "[Enclose.IO] Set up Ruby"
-        uses: MSP-Greg/ruby-setup-ruby@add-path
-        with:
-          ruby-version: 2.7.1
+        uses: ruby/setup-ruby@v1
+        # uses: MSP-Greg/ruby-setup-ruby@add-path
+        # with:
+        #   ruby-version: 2.7.1
       # - name: "[Enclose.IO] Install rubocop"
       #   run: gem install rubocop
       # - name: "[Enclose.IO] Run rubocop"
