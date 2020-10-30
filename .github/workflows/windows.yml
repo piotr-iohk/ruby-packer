@@ -21,6 +21,7 @@ jobs:
       - name: "[Enclose.IO] Install libraries"
         run: |
           choco install --no-progress squashfs
+          choco install make
       - name: "[Enclose.IO] Set up Ruby"
         uses: ruby/setup-ruby@v1
         # uses: MSP-Greg/ruby-setup-ruby@add-path
