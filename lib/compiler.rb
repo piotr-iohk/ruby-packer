@@ -603,8 +603,6 @@ class Compiler
   end
 
   def stuff_libffi
-    return if Gem.win_platform? # TODO
-
     stuff 'libffi' do
       Dir['**/configure.ac'].each do |x|
         File.utime(Time.at(0), Time.at(0), x)
@@ -612,15 +610,24 @@ class Compiler
       Dir['**/*.m4'].each do |x|
         File.utime(Time.at(0), Time.at(0), x)
       end
-
-      @utils.run(compile_env,
-                 './configure',
-                 '--with-pic',
-                 '--disable-shared',
-                 '--enable-static',
-                 "--prefix=#{@local_build}")
-      @utils.run(compile_env, "make #{@options[:make_args]}")
-      @utils.run(compile_env, 'make install')
+      if Gem.win_platform?
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }),
+                   'sh',
+                   './configure',
+                   '--build=x86_64-w64-mingw32',
+                   '--host=x86_64-w64-mingw32')
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }), 'sh', './make-win')
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }), 'sh', './make-win', 'install')
+      else
+        @utils.run(compile_env,
+                   './configure',
+                   '--with-pic',
+                   '--disable-shared',
+                   '--enable-static',
+                   "--prefix=#{@local_build}")
+        @utils.run(compile_env, "make #{@options[:make_args]}")
+        @utils.run(compile_env, 'make install')
+      end
     end
   end
 

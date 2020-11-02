@@ -48,6 +48,8 @@ jobs:
           mksquashfs -version
           where ruby
           ruby -v
+          where msys2
+          where sh
           where bundle
           bundle -v
         shell: cmd
