@@ -289,7 +289,7 @@ class Compiler
       log '=> gem env'
       @utils.run local_toolchain_env, @gem, 'env'
       @utils.run local_toolchain_env, @bundle, 'env'
-      @utils.run(local_toolchain_env, @bundle, 'install')
+      @utils.run(local_toolchain_env, @bundle, 'install', '--without', 'development', 'test')
       # detect Rails
       if @utils.run_allow_failures(local_toolchain_env, @bundle, 'show', 'rails').exitstatus.zero?
         log '=> Detected a Rails project'
