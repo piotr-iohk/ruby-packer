@@ -17,6 +17,7 @@ jobs:
       ENCLOSE_IO_RUBYC_ADDTIONAL_ARGS: --tmpdir=C:\rubyc_tmp
     steps:
       - uses: ilammy/setup-nasm@v1
+      - uses: ilammy/msvc-dev-cmd@v1
       - uses: actions/checkout@v2
       - name: "[Enclose.IO] Install libraries"
         run: |
