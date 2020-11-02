@@ -617,9 +617,14 @@ class Compiler
         @utils.run(compile_env,
           'sh',
           './configure',
-          '--target=x86_64-w64-mingw32')
-        @utils.run(compile_env, "mingw32-make.exe")
-        @utils.run(compile_env, 'mingw32-make.exe install')
+          '--build=x86_64-w64-mingw32',
+          'CC="msvcc.sh -m64"',
+          'CXX="msvcc.sh -m64"',
+          'LD=link',
+          'CPP="cl -nologo -EP"',
+          'CPPFLAGS="-DFFI_BUILDING_DLL"')
+        @utils.run(compile_env, "nmake")
+        @utils.run(compile_env, 'nmake install')
       else
         @utils.run(compile_env,
           './configure',
