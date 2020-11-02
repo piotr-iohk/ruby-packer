@@ -59,6 +59,12 @@ jobs:
           mkdir C:\rubyc_tmp
           bundle exec rake
         shell: cmd
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: rubyc_tmp
+          path: C:\rubyc_tmp
+
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release
