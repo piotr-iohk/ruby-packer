@@ -618,8 +618,8 @@ class Compiler
           'sh',
           './configure',
           '--target=x86_64-w64-mingw32')
-        @utils.run(compile_env, "nmake #{@options[:nmake_args]}")
-        @utils.run(compile_env, 'nmake install')
+        @utils.run(compile_env, "mingw32-make.exe")
+        @utils.run(compile_env, 'mingw32-make.exe install')
       else
         @utils.run(compile_env,
           './configure',
