@@ -17,16 +17,21 @@ jobs:
       ENCLOSE_IO_RUBYC_ADDTIONAL_ARGS: --tmpdir=C:\rubyc_tmp
     steps:
       - uses: ilammy/setup-nasm@v1
+      - uses: ilammy/msvc-dev-cmd@v1
       - uses: actions/checkout@v2
       - name: "[Enclose.IO] Install libraries"
         run: |
           choco install --no-progress squashfs
+          choco install make
       - name: "[Enclose.IO] Set up Ruby"
         uses: ruby/setup-ruby@v1
-      - name: "[Enclose.IO] Install rubocop"
-        run: gem install rubocop
-      - name: "[Enclose.IO] Run rubocop"
-        run: rubocop
+        # uses: MSP-Greg/ruby-setup-ruby@add-path
+        # with:
+        #   ruby-version: 2.7.1
+      # - name: "[Enclose.IO] Install rubocop"
+      #   run: gem install rubocop
+      # - name: "[Enclose.IO] Run rubocop"
+      #   run: rubocop
       - name: "[Enclose.IO] Install dependencies"
         run: bundle install
       - name: "[Enclose.IO] Set up Perl"
@@ -48,6 +53,9 @@ jobs:
           mksquashfs -version
           where ruby
           ruby -v
+          where bash
+          where msys2
+          where sh
           where bundle
           bundle -v
         shell: cmd
@@ -57,6 +65,13 @@ jobs:
           mkdir C:\rubyc_tmp
           bundle exec rake
         shell: cmd
+
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: libffi
+          path: C:/rubyc_tmp/libffi/
+
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release
