@@ -618,6 +618,7 @@ class Compiler
           'sh',
           './configure',
           '--build=x86_64-w64-mingw32',
+          '--host=x86_64-w64-mingw32',
           'CC="msvcc.sh -m64"',
           'CXX="msvcc.sh -m64"',
           'LD=link',
