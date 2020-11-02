@@ -617,8 +617,7 @@ class Compiler
         @utils.run(compile_env,
           'sh',
           './configure',
-          '--build=x86_64-w64-mingw32',
-          '--host=x86_64-w64-mingw32')
+          '--target=x86_64-w64-mingw32')
         @utils.run(compile_env, "nmake #{@options[:nmake_args]}")
         @utils.run(compile_env, 'nmake install')
       else
