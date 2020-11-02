@@ -614,18 +614,13 @@ class Compiler
       if Gem.win_platform?
         # path/to/configure CC=path/to/msvcc.sh CXX=path/to/msvcc.sh LD=link CPP="cl -nologo -EP" CPPFLAGS="-DFFI_BUILDING_DLL"
         # --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32
-        @utils.run(compile_env,
+        @utils.run(compile_env.merge({'MAKE' => 'make'}),
           'sh',
           './configure',
           '--build=x86_64-w64-mingw32',
-          '--host=x86_64-w64-mingw32',
-          'CC="msvcc.sh -m64"',
-          'CXX="msvcc.sh -m64"',
-          'LD=link',
-          'CPP="cl -nologo -EP"',
-          'CPPFLAGS="-DFFI_BUILDING_DLL"')
-        @utils.run(compile_env, "nmake")
-        @utils.run(compile_env, 'nmake install')
+          '--host=x86_64-w64-mingw32')
+        @utils.run(compile_env.merge({'MAKE' => 'make'}), 'sh', './make')
+        @utils.run(compile_env.merge({'MAKE' => 'make'}), 'sh', './make', 'install')
       else
         @utils.run(compile_env,
           './configure',
