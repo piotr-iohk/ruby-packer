@@ -289,7 +289,7 @@ class Compiler
       log '=> gem env'
       @utils.run local_toolchain_env, @gem, 'env'
       @utils.run local_toolchain_env, @bundle, 'env'
-      @utils.run(local_toolchain_env, @bundle, 'install')
+      @utils.run(local_toolchain_env, @bundle, 'install', '--without', 'development', 'test')
       # detect Rails
       if @utils.run_allow_failures(local_toolchain_env, @bundle, 'show', 'rails').exitstatus.zero?
         log '=> Detected a Rails project'
@@ -603,8 +603,6 @@ class Compiler
   end
 
   def stuff_libffi
-    return if Gem.win_platform? # TODO
-
     stuff 'libffi' do
       Dir['**/configure.ac'].each do |x|
         File.utime(Time.at(0), Time.at(0), x)
@@ -612,15 +610,24 @@ class Compiler
       Dir['**/*.m4'].each do |x|
         File.utime(Time.at(0), Time.at(0), x)
       end
-
-      @utils.run(compile_env,
-                 './configure',
-                 '--with-pic',
-                 '--disable-shared',
-                 '--enable-static',
-                 "--prefix=#{@local_build}")
-      @utils.run(compile_env, "make #{@options[:make_args]}")
-      @utils.run(compile_env, 'make install')
+      if Gem.win_platform?
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }),
+                   'sh',
+                   './configure',
+                   '--build=x86_64-w64-mingw32',
+                   '--host=x86_64-w64-mingw32')
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }), 'sh', './make-win')
+        @utils.run(compile_env.merge({ 'MAKE' => 'make' }), 'sh', './make-win', 'install')
+      else
+        @utils.run(compile_env,
+                   './configure',
+                   '--with-pic',
+                   '--disable-shared',
+                   '--enable-static',
+                   "--prefix=#{@local_build}")
+        @utils.run(compile_env, "make #{@options[:make_args]}")
+        @utils.run(compile_env, 'make install')
+      end
     end
   end
 
@@ -733,6 +740,7 @@ class Compiler
   def prepare_pass1_flags
     if Gem.win_platform?
       @ldflags += " -libpath:#{@utils.escape File.join(@options[:tmpdir], 'zlib').gsub('/', '\\')} #{@utils.escape File.join(@options[:tmpdir], 'zlib', 'zlib.lib')} Advapi32.lib "
+      @cflags += " -I#{@utils.escape File.join(@options[:tmpdir], 'libffi', 'x86_64-w64-mingw32', 'include')} "
       @cflags += " -I#{@utils.escape File.join(@options[:tmpdir], 'zlib')} -I#{@utils.escape @ruby_source_dir} "
     else
       lib   = File.join @local_build, 'lib'

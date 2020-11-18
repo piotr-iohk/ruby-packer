@@ -33,6 +33,8 @@ jobs:
         run: |
           choco install strawberryperl
           echo "##[add-path]C:\strawberry\c\bin;C:\strawberry\perl\site\bin;C:\strawberry\perl\bin"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - name: "[Enclose.IO] Inspect Windows Environment"
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\${{ matrix.vs }}\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
@@ -48,6 +50,8 @@ jobs:
           mksquashfs -version
           where ruby
           ruby -v
+          where msys2
+          where sh
           where bundle
           bundle -v
         shell: cmd
@@ -57,6 +61,12 @@ jobs:
           mkdir C:\rubyc_tmp
           bundle exec rake
         shell: cmd
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: rubyc_tmp
+          path: C:\rubyc_tmp
+
       - name: "[Enclose.IO] Create Windows Release"
         if: ${{ github.ref == 'refs/heads/master' && success() }}
         id: create_windows_release
