@@ -740,6 +740,7 @@ class Compiler
   def prepare_pass1_flags
     if Gem.win_platform?
       @ldflags += " -libpath:#{@utils.escape File.join(@options[:tmpdir], 'zlib').gsub('/', '\\')} #{@utils.escape File.join(@options[:tmpdir], 'zlib', 'zlib.lib')} Advapi32.lib "
+      @cflags += " -I#{@utils.escape File.join(@options[:tmpdir], 'libffi', 'x86_64-w64-mingw32', 'include')} "
       @cflags += " -I#{@utils.escape File.join(@options[:tmpdir], 'zlib')} -I#{@utils.escape @ruby_source_dir} "
     else
       lib   = File.join @local_build, 'lib'
